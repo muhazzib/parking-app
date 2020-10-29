@@ -18,6 +18,7 @@ import { auth, db } from './firebase/firebase';
 import PrivateRoute from './routes/protected-route';
 import PublicRoute from './routes/public-route';
 import AppContext from './contexts/app-context';
+import { Spinner } from 'react-bootstrap';
 
 
 function App() {
@@ -47,7 +48,7 @@ function App() {
   }), [setAuthState]);
 
   if (authentication.initializing) {
-    return <div>Loading</div>;
+    return   <Spinner animation="grow" className='splashLoader'/>;
   }
 
   return (
@@ -56,7 +57,6 @@ function App() {
         user
       }}>
       <Router>
-        {console.log(authentication.authenticated, 'aa---')}
         <div>
           {
             authentication.authenticated && (
