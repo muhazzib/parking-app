@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState } from 'react';
 import { Form } from 'react-bootstrap';
 import DefaultButton from '../../components/button';
 import DefaultFormGroup from '../../components/form-group';

@@ -17,7 +17,7 @@ const AppBar = () => {
     }
 
     return (
-        <Navbar>
+        <Navbar className='appbar'>
             <Navbar.Brand>Smart Parking</Navbar.Brand>
             <Navbar.Toggle />
             <Navbar.Collapse className="justify-content-end">
