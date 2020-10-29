@@ -3,10 +3,11 @@ import { Navbar, Form, Button, FormControl } from 'react-bootstrap';
 import AppContext from '../contexts/app-context';
 import DefaultButton from './button';
 import { auth } from '../firebase/firebase';
-
+import { useHistory } from "react-router-dom";
 
 const AppBar = () => {
     const store = useContext(AppContext);
+    const history = useHistory();
 
     const logout = () => {
         auth().signOut().then(function () {
@@ -18,7 +19,7 @@ const AppBar = () => {
 
     return (
         <Navbar className='appbar'>
-            <Navbar.Brand>Smart Parking</Navbar.Brand>
+            <Navbar.Brand className='clickable-item' onClick={() => history.push('/')}>Smart Parking</Navbar.Brand>
             <Navbar.Toggle />
             <Navbar.Collapse className="justify-content-end">
                 <Navbar.Text className='mr-2'>

@@ -7,6 +7,7 @@ import {
 import Login from './pages/auth/login';
 import Register from './pages/auth/register';
 import Dashboard from './pages/home/dashboard';
+import Slots from './pages/home/slots';
 import AppBar from './components/appbar';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './styles/auth.css';
@@ -25,7 +26,6 @@ function App() {
     initializing: true
   });
   const [user, setUser] = useState({});
-
 
   useEffect(() => auth().onAuthStateChanged(user => {
     if (user) {
@@ -67,6 +67,7 @@ function App() {
             renders the first one that matches the current URL. */}
           <Switch>
             <PrivateRoute path="/" authenticated={authentication.authenticated} exact={true} component={Dashboard} />
+            <PrivateRoute path="/slots/:locationId" authenticated={authentication.authenticated} exact={true} component={Slots} />
             <PublicRoute path="/login" authenticated={authentication.authenticated} exact={true} component={Login} />
             <PublicRoute path="/register" authenticated={authentication.authenticated} exact={true} component={Register} />
           </Switch>
