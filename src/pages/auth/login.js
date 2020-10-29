@@ -2,7 +2,9 @@ import { useState } from 'react'
 import { Form } from 'react-bootstrap';
 import DefaultButton from '../../components/button';
 import DefaultFormGroup from '../../components/form-group';
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
+import { auth, db } from '../../firebase/firebase';
+import { ToastContainer, toast } from 'react-toastify';
 
 const Login = () => {
     const [validated, setValidated] = useState(false);
@@ -11,6 +13,7 @@ const Login = () => {
         email: '',
         password: ''
     });
+    const history = useHistory();
 
     const login = (event) => {
         const form = event.currentTarget;
@@ -20,7 +23,16 @@ const Login = () => {
         } else {
             setLoading(true);
             setValidated(true);
-            console.log(user,'user====')
+            auth().signInWithEmailAndPassword(user.email, user.password).then((res) => {
+                console.log(auth().currentUser.uid, 'auth().currentUser.uid')
+                db.child('users/' + auth().currentUser.uid).once("value", (snapshot) => {
+                    let obj = snapshot.val();
+                    localStorage.setItem('user', JSON.stringify(obj));
+                    history.push('/');
+                });
+            }).catch((err) => {
+                toast.error(err.message);
+            });
         }
     };
 
@@ -39,6 +51,7 @@ const Login = () => {
             <DefaultButton loading={loading} className='float-right' type='submit' title='Login' onClick={() => {
 
             }} />
+            <ToastContainer />
         </Form>
     );
 }

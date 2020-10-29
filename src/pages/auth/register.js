@@ -12,7 +12,8 @@ const Register = () => {
     const [user, setUser] = useState({
         username: '',
         email: '',
-        password: ''
+        password: '',
+        role: 'user'
     });
     const history = useHistory();
 
@@ -28,11 +29,13 @@ const Register = () => {
             auth().createUserWithEmailAndPassword(user.email, user.password).then((res) => {
                 const userObj = { ...user };
                 delete userObj.password;
-                db.child('users/' + auth().currentUser.uid).push({ ...userObj, userId: auth().currentUser.uid }).then((success) => {
-                    history.push('/');
-                }).catch(err => {
-                    console.log(err, 'err---')
-                });
+                db.child('users/' + auth().currentUser.uid).set({ ...userObj, userId: auth().currentUser.uid }).then(() => {
+                    db.child('users/' + auth().currentUser.uid).once("value", (snapshot) => {
+                        let obj = snapshot.val();
+                        localStorage.setItem('user', JSON.stringify(obj));
+                        history.push('/');
+                    });
+                })
             }).catch((err) => {
                 toast.error(err.message);
             });
