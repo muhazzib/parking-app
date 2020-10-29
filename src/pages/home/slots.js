@@ -32,7 +32,6 @@ const Slots = () => {
     }, []);
     return (
         <>
-            {console.log(params, 'params')}
             <Heading title={`${location.name} Slots`} hideButton={store.user.role !== 'admin'} onClickButton={() => showSlotModal(!slotModal)} containerClass='mt-3' />
             <div className='mx-3'>
                 <Table bordered hover>
