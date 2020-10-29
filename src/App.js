@@ -11,6 +11,7 @@ import AppBar from './components/appbar';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './styles/auth.css';
 import './styles/appbar.css';
+import './styles/general.css';
 import 'react-toastify/dist/ReactToastify.css';
 import { auth, db } from './firebase/firebase';
 import PrivateRoute from './routes/protected-route';

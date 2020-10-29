@@ -5,11 +5,13 @@ import { db } from '../../firebase/firebase';
 import Heading from '../../components/heading';
 import LocationModal from '../../components/location-modal';
 import { Table } from 'react-bootstrap';
+import { useHistory } from "react-router-dom";
 
 const Dashboard = () => {
     const [locationModal, showLocationModal] = useState(false);
     const [locations, setLocations] = useState({});
     const store = useContext(AppContext);
+    const history = useHistory();
 
     useEffect(() => {
         db.child('locations').on("value", (snapshot) => {
@@ -33,7 +35,7 @@ const Dashboard = () => {
                     <tbody>
                         {
                             Object.keys(locations).map((record, recordIndex) => (
-                                <tr key={record} className=''>
+                                <tr key={record} className='clickable-row' onClick={() => history.push(`slots/${record}`)}>
                                     <td>{recordIndex + 1}</td>
                                     <td>{locations[record].name}</td>
                                 </tr>
