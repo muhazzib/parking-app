@@ -7,6 +7,7 @@ import Login from './pages/auth/login';
 import Register from './pages/auth/register';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './styles/auth.css';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   return (

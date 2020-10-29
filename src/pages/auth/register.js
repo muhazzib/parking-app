@@ -2,7 +2,10 @@ import { useState } from 'react'
 import { Form, Button } from 'react-bootstrap';
 import DefaultButton from '../../components/button';
 import DefaultFormGroup from '../../components/form-group';
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
+import { ToastContainer, toast } from 'react-toastify';
+import { auth, db } from '../../firebase/firebase';
+
 const Register = () => {
     const [validated, setValidated] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -10,9 +13,11 @@ const Register = () => {
         username: '',
         email: '',
         password: ''
-    })
+    });
+    const history = useHistory();
 
-    const register = (event) => {
+
+    const register = async (event) => {
         const form = event.currentTarget;
         event.preventDefault();
         if (form.checkValidity() === false) {
@@ -20,7 +25,17 @@ const Register = () => {
         } else {
             setLoading(true);
             setValidated(true);
-            console.log(user,'user====')
+            auth().createUserWithEmailAndPassword(user.email, user.password).then((res) => {
+                const userObj = { ...user };
+                delete userObj.password;
+                db.child('users/' + auth().currentUser.uid).push({ ...userObj, userId: auth().currentUser.uid }).then((success) => {
+                    history.push('/');
+                }).catch(err => {
+                    console.log(err, 'err---')
+                });
+            }).catch((err) => {
+                toast.error(err.message);
+            });
         }
 
     };
@@ -40,6 +55,7 @@ const Register = () => {
             <DefaultButton loading={loading} className='float-right' type='submit' title='Register' onClick={() => {
 
             }} />
+            <ToastContainer />
         </Form>
     );
 }
