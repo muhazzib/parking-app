@@ -38,7 +38,7 @@ const Slots = () => {
                     {
                         Object.keys(slots).map((record, recordIndex) => (
                             <Col lg={3}>
-                                <Card key={record}>
+                                <Card key={record} className='clickable-item'>
                                     <Card.Body>
                                         <Card.Title>{slots[record].name}</Card.Title>
                                     </Card.Body>
