@@ -28,6 +28,7 @@ const Slots = () => {
         noOfHours: ''
     });
     const [loading, setLoading] = useState(false);
+    const [validated, setValidated] = useState(false);
     const store = useContext(AppContext);
     const history = useHistory();
     const params = useParams();
@@ -57,22 +58,23 @@ const Slots = () => {
     }, []);
 
     const getFormValues = (ev) => {
+        console.log(ev.target.value, 'ev')
         let value = ev.target.value;
         const bookingClone = { ...booking };
 
-        if (ev.target.name === 'startingTime') {
-            const startingTimeInUTC = moment.utc(booking.date + ' ' + ev.target.value).format();
-            value = startingTimeInUTC;
-            if (bookingClone.endingTime) {
-                bookingClone.endingTime = moment.utc(startingTimeInUTC).add(Number(bookingClone.noOfHours), 'hours').format();
-            }
-        }
+        // if (ev.target.name === 'startingTime') {
+        //     const startingTimeInUTC = moment.utc(booking.date + ' ' + ev.target.value).format();
+        //     value = startingTimeInUTC;
+        //     if (bookingClone.endingTime) {
+        //         bookingClone.endingTime = moment.utc(startingTimeInUTC).add(Number(bookingClone.noOfHours), 'hours').format();
+        //     }
+        // }
 
-        if (ev.target.name === 'endingTime') {
-            const endingTimeInUTC = moment.utc(booking.startingTime).add(Number(ev.target.value), 'hours').format();
-            bookingClone.noOfHours = ev.target.value;
-            value = endingTimeInUTC;
-        }
+        // if (ev.target.name === 'endingTime') {
+        //     const endingTimeInUTC = moment.utc(booking.startingTime).add(Number(ev.target.value), 'hours').format();
+        //     bookingClone.noOfHours = ev.target.value;
+        //     value = endingTimeInUTC;
+        // }
         setBooking({
             ...bookingClone,
             [ev.target.name]: value
@@ -80,39 +82,49 @@ const Slots = () => {
 
     };
 
-    const addBooking = () => {
+    const addBooking = (event) => {
+        const form = event.currentTarget;
+        event.preventDefault();
+        if (form.checkValidity() === false) {
+            event.stopPropagation();
+        } else {
+            const bookingClone = { ...booking };
+            bookingClone.userId = auth().currentUser.uid;
+            bookingClone.locationId = params.locationId;
+            bookingClone.startingTime = moment.utc(bookingClone.date + ' ' + bookingClone.startingTime).format();
+            bookingClone.endingTime = moment.utc(bookingClone.date + ' ' + bookingClone.endingTime).format();
 
-        const bookingClone = { ...booking };
-        bookingClone.userId = auth().currentUser.uid;
-        bookingClone.locationId = params.locationId;
-
-        if (bookingClone.date && bookingClone.slotId && bookingClone.startingTime && bookingClone.endingTime) {
-            setLoading(true);
-            db.child('bookings/').push(bookingClone).then(() => {
-                setLoading(false);
-                setBooking({
-                    date: '',
-                    slotId: '',
-                    userId: '',
-                    locationId: '',
-                    noOfHours: '',
-                    startingTime: '',
-                    endingTime: ''
-                })
-                toast.success('Booking has been done successfully');
-            });
+            if (bookingClone.slotId) {
+                setLoading(true);
+                setValidated(true);
+                db.child('bookings/').push(bookingClone).then(() => {
+                    setLoading(false);
+                    setBooking({
+                        date: '',
+                        slotId: '',
+                        userId: '',
+                        locationId: '',
+                        noOfHours: '',
+                        startingTime: '',
+                        endingTime: ''
+                    })
+                    toast.success('Booking has been done successfully');
+                });
+            }
         }
     };
 
     const checkAvailability = (slotToCheck, bookingDate, startingTime, endingTime, prevBookings = {}) => {
         const matchedBooking = Object.keys(prevBookings).filter((record) => {
-            const startTimeToCompare = moment.utc(startingTime).isBetween(moment.utc(prevBookings[record].startingTime), moment.utc(prevBookings[record].endingTime));
-            const endTimeToCompare = !startTimeToCompare && endingTime >= prevBookings[record].endingTime ? true : moment.utc(endingTime).isBetween(moment.utc(prevBookings[record].startingTime), moment.utc(prevBookings[record].endingTime));
-            if (prevBookings[record].slotId === slotToCheck) {
-                console.log(startTimeToCompare, 'startTimeToCompare');
-                console.log(endTimeToCompare, 'endTimeToCompare');
+            const startTimeToCompare = moment.utc(prevBookings[record].startingTime).isBetween(moment.utc(bookingDate + ' ' + startingTime), moment.utc(bookingDate + ' ' + endingTime));
+            const endTimeToCompare = moment.utc(prevBookings[record].endingTime).isBetween(moment.utc(bookingDate + ' ' + startingTime), moment.utc(bookingDate + ' ' + endingTime));
+            
+            // const startTimeToCompare = moment.utc(moment.utc(bookingDate + ' ' + startingTime).format()).isBetween(moment.utc(prevBookings[record].startingTime), moment.utc(prevBookings[record].endingTime));
+            // const endTimeToCompare = !startTimeToCompare && moment.utc(bookingDate + ' ' + endingTime).format() >= prevBookings[record].endingTime ? false : moment.utc(moment.utc(bookingDate + ' ' + endingTime).format()).isBetween(moment.utc(prevBookings[record].startingTime), moment.utc(prevBookings[record].endingTime));
+            if(prevBookings[record].slotId === slotToCheck) {
+                console.log(startTimeToCompare,'startTimeToComparestartTimeToCompare');
+                console.log(endTimeToCompare,'endTimeToCompare');
             }
-
             return prevBookings[record].slotId === slotToCheck && prevBookings[record].date === bookingDate && (startTimeToCompare || endTimeToCompare);
         }).reduce((res, key) => (res[key] = prevBookings[key], res), {});
         if (!Object.keys(matchedBooking).length) {
@@ -124,24 +136,15 @@ const Slots = () => {
     return (
         <>
             <Heading title={`${location.name} Slots`} hideButton={store.user.role !== 'admin'} onClickButton={() => showSlotModal(!slotModal)} containerClass='mt-3' />
-            {console.log(booking, '---bok')}
             {
                 store.user.role === 'user' && (
                     <div className='booking-form'>
-                        <DefaultFormGroup value={booking.date} onChange={getFormValues} name='date' required={true} type='date' label='Parking Date' placeholder='Select parking date' controlId='formBasicParkingDate' />
-                        <DefaultFormGroup value={booking.startingTime} disabled={!booking.date} onChange={getFormValues} name='startingTime' required={true} type='time' label='Parking Time' placeholder='Select parking time' controlId='formBasicParkingTime' />
-                        <Form.Group controlId="formBasicParkingHours">
-                            <Form.Label>Select parking hours</Form.Label>
-                            <Form.Control value={booking.noOfHours} as="select" custom onChange={getFormValues} name='endingTime' disabled={!booking.date || !booking.startingTime}>
-                                <option value='' disabled selected>Select no of hours</option>
-                                <option value='1'>1</option>
-                                <option value='2'>2</option>
-                                <option value='3'>3</option>
-                                <option value='4'>4</option>
-                                <option value='5'>5</option>
-                            </Form.Control>
-                        </Form.Group>
-                        <DefaultButton loading={loading} className='float-right' type='button' title='Book' onClick={addBooking} />
+                        <Form noValidate validated={validated} onSubmit={addBooking}>
+                            <DefaultFormGroup value={booking.date} onChange={getFormValues} name='date' required={true} type='date' label='Parking Date' placeholder='Select parking date' controlId='formBasicParkingDate' />
+                            <DefaultFormGroup value={booking.startingTime} max={booking.endingTime} required={true} disabled={!booking.date} onChange={getFormValues} name='startingTime' required={true} type='time' label='Parking Staring Time' placeholder='Select parking time' controlId='formBasicStartingParkingTime' />
+                            <DefaultFormGroup value={booking.endingTime} min={booking.startingTime} required={true} disabled={!booking.startingTime} onChange={getFormValues} name='endingTime' required={true} type='time' label='Parking Ending Time' placeholder='Select parking time' controlId='formBasicEndingParkingTime' />
+                            <DefaultButton loading={loading} className='float-right' type='submit' title='Book' onClick={addBooking} />
+                        </Form>
                     </div>
                 )
             }
