@@ -1,0 +1,7 @@
+.selected-slot {
+    border: 1px solid green;
+}
+
+.unavailable-slot {
+    background-color: red;
+}
