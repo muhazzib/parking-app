@@ -4,7 +4,7 @@ import AppContext from '../../contexts/app-context';
 import { db } from '../../firebase/firebase';
 import Heading from '../../components/heading';
 import SlotModal from '../../components/slot-modal';
-import { Table } from 'react-bootstrap';
+import { Card, Row, Col } from 'react-bootstrap';
 import { useHistory, useParams } from "react-router-dom";
 
 const Slots = () => {
@@ -16,7 +16,7 @@ const Slots = () => {
     const params = useParams();
 
     useEffect(() => {
-        db.child('slots').on("value", (snapshot) => {
+        db.child('slots').orderByChild('locationId').equalTo(params.locationId).on("value", (snapshot) => {
             let obj = snapshot.val();
             if (obj) {
                 setSlots(obj);
@@ -34,24 +34,19 @@ const Slots = () => {
         <>
             <Heading title={`${location.name} Slots`} hideButton={store.user.role !== 'admin'} onClickButton={() => showSlotModal(!slotModal)} containerClass='mt-3' />
             <div className='mx-3'>
-                <Table bordered hover>
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Name</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {
-                            Object.keys(slots).map((record, recordIndex) => (
-                                <tr key={record} className='clickable-item'>
-                                    <td>{recordIndex + 1}</td>
-                                    <td>{slots[record].name}</td>
-                                </tr>
-                            ))
-                        }
-                    </tbody>
-                </Table>
+                <Row>
+                    {
+                        Object.keys(slots).map((record, recordIndex) => (
+                            <Col lg={3}>
+                                <Card key={record}>
+                                    <Card.Body>
+                                        <Card.Title>{slots[record].name}</Card.Title>
+                                    </Card.Body>
+                                </Card>
+                            </Col>
+                        ))
+                    }
+                </Row>
             </div>
             <SlotModal show={slotModal} handleClose={() => showSlotModal(!slotModal)} locationId={params.locationId} />
         </>
