@@ -43,7 +43,6 @@ const Slots = () => {
 
         db.child('bookings').orderByChild('locationId').equalTo(params.locationId).on("value", (snapshot) => {
             let obj = snapshot.val();
-            console.log(obj, 'obj---')
             if (obj) {
                 setBookings(obj);
             }
@@ -61,20 +60,7 @@ const Slots = () => {
         console.log(ev.target.value, 'ev')
         let value = ev.target.value;
         const bookingClone = { ...booking };
-
-        // if (ev.target.name === 'startingTime') {
-        //     const startingTimeInUTC = moment.utc(booking.date + ' ' + ev.target.value).format();
-        //     value = startingTimeInUTC;
-        //     if (bookingClone.endingTime) {
-        //         bookingClone.endingTime = moment.utc(startingTimeInUTC).add(Number(bookingClone.noOfHours), 'hours').format();
-        //     }
-        // }
-
-        // if (ev.target.name === 'endingTime') {
-        //     const endingTimeInUTC = moment.utc(booking.startingTime).add(Number(ev.target.value), 'hours').format();
-        //     bookingClone.noOfHours = ev.target.value;
-        //     value = endingTimeInUTC;
-        // }
+        
         setBooking({
             ...bookingClone,
             [ev.target.name]: value

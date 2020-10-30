@@ -13,14 +13,14 @@ const Dashboard = () => {
     const store = useContext(AppContext);
     const history = useHistory();
 
-    useEffect(() => {
-        db.child('locations').on("value", (snapshot) => {
-            let obj = snapshot.val();
-            if (obj) {
-                setLocations(obj);
-            }
-        });
-    }, []);
+    // useEffect(() => {
+    //     db.child('locations').on("value", (snapshot) => {
+    //         let obj = snapshot.val();
+    //         if (obj) {
+    //             setLocations(obj);
+    //         }
+    //     });
+    // }, []);
     return (
         <>
             <Heading title='Locations' hideButton={store.user.role !== 'admin'} onClickButton={() => showLocationModal(!locationModal)} containerClass='mt-3' />
@@ -34,10 +34,10 @@ const Dashboard = () => {
                     </thead>
                     <tbody>
                         {
-                            Object.keys(locations).map((record, recordIndex) => (
+                            Object.keys(store.locations).map((record, recordIndex) => (
                                 <tr key={record} className='clickable-item' onClick={() => history.push(`slots/${record}`)}>
                                     <td>{recordIndex + 1}</td>
-                                    <td>{locations[record].name}</td>
+                                    <td>{store.locations[record].name}</td>
                                 </tr>
                             ))
                         }

@@ -24,16 +24,15 @@ const Login = () => {
             setLoading(true);
             setValidated(true);
             auth().signInWithEmailAndPassword(user.email, user.password).then((res) => {
-                console.log(auth().currentUser.uid, 'auth().currentUser.uid')
                 db.child('users/' + auth().currentUser.uid).once("value", (snapshot) => {
                     let obj = snapshot.val();
                     localStorage.setItem('user', JSON.stringify(obj));
+                    setLoading(false);
                     history.push('/');
                 });
             }).catch((err) => {
                 toast.error(err.message);
             });
-            setLoading(false);
         }
     };
 

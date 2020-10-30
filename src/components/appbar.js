@@ -22,9 +22,9 @@ const AppBar = () => {
             <Navbar.Brand className='clickable-item' onClick={() => history.push('/')}>Smart Parking</Navbar.Brand>
             <Navbar.Toggle />
             <Navbar.Collapse className="justify-content-end">
-                <Nav.Link onClick={() => history.push('/bookings')}>{store.user.role === 'user' && 'My '}Bookings</Nav.Link>
+                <Nav.Link onClick={() => history.push('/bookings')}>{store.user && store.user.role === 'user' && 'My '}Bookings</Nav.Link>
                 <Navbar.Text className='mr-2'>
-                    Signed in as: {store.user.username}
+                    Signed in as: {store.user && store.user.username}
                 </Navbar.Text>
                 <DefaultButton title='Logout' onClick={logout} />
             </Navbar.Collapse>

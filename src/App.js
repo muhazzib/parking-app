@@ -7,6 +7,7 @@ import {
 import Login from './pages/auth/login';
 import Register from './pages/auth/register';
 import Dashboard from './pages/home/dashboard';
+import Bookings from './pages/home/bookings';
 import Slots from './pages/home/slots';
 import AppBar from './components/appbar';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -28,19 +29,32 @@ function App() {
     authenticated: false,
     initializing: true
   });
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState(null);
+  const [locations, setLocations] = useState(null);
+  const [slots, setSlots] = useState(null);
 
   useEffect(() => auth().onAuthStateChanged(user => {
     if (user) {
+      setAuthState({
+        authenticated: true,
+        initializing: false
+      });
+
       db.child('users/' + user.uid).once("value", (snapshot) => {
         let obj = snapshot.val();
-        console.log(obj, '---=======')
         setUser(obj);
-        setAuthState({
-          authenticated: true,
-          initializing: false
+      }).then(() => {
+        db.child('locations').on("value", (snapshot) => {
+          let obj = snapshot.val();
+          setLocations(obj);
         });
-      });
+
+        db.child('slots').on("value", (snapshot) => {
+          let obj = snapshot.val();
+          setSlots(obj);
+        });
+      })
+
     } else {
       setAuthState({
         authenticated: false,
@@ -50,13 +64,15 @@ function App() {
   }), [setAuthState]);
 
   if (authentication.initializing) {
-    return   <Spinner animation="grow" className='splashLoader'/>;
+    return <Spinner animation="grow" className='splashLoader' />;
   }
 
   return (
     <AppContext.Provider
       value={{
-        user
+        user,
+        locations,
+        slots
       }}>
       <Router>
         <div>
@@ -70,8 +86,10 @@ function App() {
           <Switch>
             <PrivateRoute path="/" authenticated={authentication.authenticated} exact={true} component={Dashboard} />
             <PrivateRoute path="/slots/:locationId" authenticated={authentication.authenticated} exact={true} component={Slots} />
+            <PrivateRoute path="/bookings" authenticated={authentication.authenticated} exact={true} component={Bookings} />
             <PublicRoute path="/login" authenticated={authentication.authenticated} exact={true} component={Login} />
             <PublicRoute path="/register" authenticated={authentication.authenticated} exact={true} component={Register} />
+
           </Switch>
         </div>
       </Router>
