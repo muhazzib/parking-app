@@ -133,7 +133,9 @@ const Slots = () => {
             }
 
             <div className='mx-3'>
-                <h5>Select Slot</h5>
+                {Object.keys(slots).length > 0 && (
+                    <h5>Select Slot</h5>
+                )}
                 <Row>
                     {
                         Object.keys(slots).map((record, recordIndex) => {
