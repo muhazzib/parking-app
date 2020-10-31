@@ -12,15 +12,6 @@ const Dashboard = () => {
     const [locations, setLocations] = useState({});
     const store = useContext(AppContext);
     const history = useHistory();
-
-    // useEffect(() => {
-    //     db.child('locations').on("value", (snapshot) => {
-    //         let obj = snapshot.val();
-    //         if (obj) {
-    //             setLocations(obj);
-    //         }
-    //     });
-    // }, []);
     return (
         <>
             <Heading title='Locations' hideButton={store.user ? store.user.role !== 'admin' : true} onClickButton={() => showLocationModal(!locationModal)} containerClass='mt-3' />

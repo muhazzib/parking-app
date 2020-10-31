@@ -50,16 +50,19 @@ const Register = () => {
         })
     }
     return (
-        <Form noValidate validated={validated} onSubmit={register} className='auth-form'>
-            <DefaultFormGroup onChange={getFormValues} name='username' value={user.username} required={true} type='text' label='Username' placeholder='Enter username' controlId='formBasicUsername' />
-            <DefaultFormGroup onChange={getFormValues} name='email' value={user.email} required={true} type='email' label='Email Address' placeholder='Enter email' controlId='formBasicEmail' />
-            <DefaultFormGroup onChange={getFormValues} name='password' value={user.password} required={true} type='password' label='Password' placeholder='Password' controlId='formBasicPassword' />
-            <Link to='login' className='d-block'>Already have an Account ?</Link>
-            <DefaultButton loading={loading} className='float-right' type='submit' title='Register' onClick={() => {
+        <div className='auth-container'>
+            <Form validated={validated} onSubmit={register} className='auth-form'>
+                <img src='https://images.vexels.com/media/users/3/144356/isolated/preview/52fb168f1bd3abf7e97a8e9bfdac331d-speed-car-logo-by-vexels.png' />
+                <DefaultFormGroup onChange={getFormValues} name='username' value={user.username} required={true} type='text' label='Username' placeholder='Enter username' controlId='formBasicUsername' />
+                <DefaultFormGroup onChange={getFormValues} name='email' value={user.email} required={true} type='email' label='Email Address' placeholder='Enter email' controlId='formBasicEmail' />
+                <DefaultFormGroup onChange={getFormValues} name='password' value={user.password} required={true} type='password' label='Password' placeholder='Password' controlId='formBasicPassword' />
+                <Link to='login' className='d-block'>Already have an Account ?</Link>
+                <DefaultButton loading={loading} className='float-right' type='submit' title='Register' onClick={() => {
 
-            }} />
-            <ToastContainer />
-        </Form>
+                }} />
+                <ToastContainer />
+            </Form>
+        </div>
     );
 }
 

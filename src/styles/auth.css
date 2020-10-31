@@ -4,5 +4,14 @@
     left: 0;
     right: 0;
     margin: 0 auto;
-    top: 30%;
+    top: 25%;
+    background: #F6F6F6;
+    padding: 25px;
+    border-radius: 18px;
+}
+
+.auth-form>img {
+    height: 118px;
+    display: block;
+    margin: 0 auto;
 }

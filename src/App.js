@@ -1,14 +1,14 @@
 import { useState, useEffect } from 'react';
 import {
   BrowserRouter as Router,
-  Switch,
-  Route
+  Switch
 } from "react-router-dom";
 import Login from './pages/auth/login';
 import Register from './pages/auth/register';
 import Dashboard from './pages/home/dashboard';
 import Bookings from './pages/home/bookings';
 import Slots from './pages/home/slots';
+import Feedbacks from './pages/home/feedback';
 import AppBar from './components/appbar';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './styles/auth.css';
@@ -16,6 +16,7 @@ import './styles/appbar.css';
 import './styles/general.css';
 import './styles/booking-form.css';
 import './styles/slot.css';
+import './styles/feedback.css';
 import 'react-toastify/dist/ReactToastify.css';
 import { auth, db } from './firebase/firebase';
 import PrivateRoute from './routes/protected-route';
@@ -48,7 +49,7 @@ function App() {
           let obj = snapshot.val();
           setLocations(obj);
         });
-
+        
         db.child('slots').on("value", (snapshot) => {
           let obj = snapshot.val();
           setSlots(obj);
@@ -87,6 +88,7 @@ function App() {
             <PrivateRoute path="/" authenticated={authentication.authenticated} exact={true} component={Dashboard} />
             <PrivateRoute path="/slots/:locationId" authenticated={authentication.authenticated} exact={true} component={Slots} />
             <PrivateRoute path="/bookings" authenticated={authentication.authenticated} exact={true} component={Bookings} />
+            <PrivateRoute path="/feedbacks" authenticated={authentication.authenticated} exact={true} component={Feedbacks} />
             <PublicRoute path="/login" authenticated={authentication.authenticated} exact={true} component={Login} />
             <PublicRoute path="/register" authenticated={authentication.authenticated} exact={true} component={Register} />
 

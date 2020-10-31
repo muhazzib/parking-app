@@ -31,6 +31,7 @@ const Login = () => {
                     history.push('/');
                 });
             }).catch((err) => {
+                setLoading(false);
                 toast.error(err.message);
             });
         }
@@ -44,13 +45,16 @@ const Login = () => {
     }
 
     return (
-        <Form noValidate validated={validated} onSubmit={login} className='auth-form'>
-            <DefaultFormGroup onChange={getFormValues} name='email' required={true} type='email' label='Email Address' placeholder='Enter email' controlId='formBasicEmail' />
-            <DefaultFormGroup onChange={getFormValues} name='password' required={true} type='password' label='Password' placeholder='Password' controlId='formBasicPassword' />
-            <Link to='register' className='d-block'>Already a registered User ?</Link>
-            <DefaultButton loading={loading} className='float-right' type='submit' title='Login'/>
-            <ToastContainer />
-        </Form>
+        <div className='auth-container'>
+            <Form validated={validated} onSubmit={login} className='auth-form'>
+                <img src='https://images.vexels.com/media/users/3/144356/isolated/preview/52fb168f1bd3abf7e97a8e9bfdac331d-speed-car-logo-by-vexels.png' />
+                <DefaultFormGroup onChange={getFormValues} name='email' required={true} type='email' label='Email Address' placeholder='Enter email' controlId='formBasicEmail' />
+                <DefaultFormGroup onChange={getFormValues} name='password' required={true} type='password' label='Password' placeholder='Password' controlId='formBasicPassword' />
+                <Link to='register' className='d-block'>Already a registered User ?</Link>
+                <DefaultButton loading={loading} className='float-right' type='submit' title='Login' />
+                <ToastContainer />
+            </Form>
+        </div>
     );
 }
 

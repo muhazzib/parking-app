@@ -23,7 +23,7 @@ const AppBar = () => {
             <Navbar.Toggle />
             <Navbar.Collapse className="justify-content-end">
                 <Nav.Link onClick={() => history.push('/bookings')}>{store.user && store.user.role === 'user' && 'My '}Bookings</Nav.Link>
-                <Nav.Link onClick={() => history.push('/feedback')}>{store.user && store.user.role === 'user' && 'My '}Feedback</Nav.Link>
+                <Nav.Link onClick={() => history.push('/feedbacks')}>{store.user && store.user.role === 'user' && 'My '}Feedback</Nav.Link>
                 <Navbar.Text className='mr-2'>
                     Signed in as: {store.user && store.user.username}
                 </Navbar.Text>

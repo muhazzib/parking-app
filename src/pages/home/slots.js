@@ -60,7 +60,7 @@ const Slots = () => {
         console.log(ev.target.value, 'ev')
         let value = ev.target.value;
         const bookingClone = { ...booking };
-        
+
         setBooking({
             ...bookingClone,
             [ev.target.name]: value
@@ -104,7 +104,7 @@ const Slots = () => {
         const matchedBooking = Object.keys(prevBookings).filter((record) => {
             const startTimeToCompare = moment.utc(prevBookings[record].startingTime).isBetween(moment.utc(bookingDate + ' ' + startingTime), moment.utc(bookingDate + ' ' + endingTime));
             const endTimeToCompare = moment.utc(prevBookings[record].endingTime).isBetween(moment.utc(bookingDate + ' ' + startingTime), moment.utc(bookingDate + ' ' + endingTime));
-           
+
             return prevBookings[record].slotId === slotToCheck && prevBookings[record].date === bookingDate && (startTimeToCompare || endTimeToCompare);
         }).reduce((res, key) => (res[key] = prevBookings[key], res), {});
         if (!Object.keys(matchedBooking).length) {
@@ -113,6 +113,9 @@ const Slots = () => {
         return false;
     };
 
+    const validateForm = () => {
+        return booking.date && booking.startingTime && booking.endingTime;
+    }
     return (
         <>
             <Heading title={`${location.name} Slots`} hideButton={store.user ? store.user.role !== 'admin' : true} onClickButton={() => showSlotModal(!slotModal)} containerClass='mt-3' />
@@ -123,17 +126,18 @@ const Slots = () => {
                             <DefaultFormGroup value={booking.date} onChange={getFormValues} name='date' required={true} type='date' label='Parking Date' placeholder='Select parking date' controlId='formBasicParkingDate' />
                             <DefaultFormGroup value={booking.startingTime} max={booking.endingTime} required={true} disabled={!booking.date} onChange={getFormValues} name='startingTime' required={true} type='time' label='Parking Staring Time' placeholder='Select parking time' controlId='formBasicStartingParkingTime' />
                             <DefaultFormGroup value={booking.endingTime} min={booking.startingTime} required={true} disabled={!booking.startingTime} onChange={getFormValues} name='endingTime' required={true} type='time' label='Parking Ending Time' placeholder='Select parking time' controlId='formBasicEndingParkingTime' />
-                            <DefaultButton loading={loading} className='float-right' type='submit' title='Book' onClick={addBooking} />
+                            <DefaultButton disabled={!booking.date || !booking.startingTime || !booking.endingTime || !booking.slotId} loading={loading} className='float-right' type='submit' title='Book' onClick={addBooking} />
                         </Form>
                     </div>
                 )
             }
 
             <div className='mx-3'>
+                <h5>Select Slot</h5>
                 <Row>
                     {
                         Object.keys(slots).map((record, recordIndex) => {
-                            const isFormFilled = booking.date && booking.startingTime && booking.endingTime;
+                            const isFormFilled = validateForm();
                             const isBookingAvailable = isFormFilled ? checkAvailability(record, booking.date, booking.startingTime, booking.endingTime, bookings) : false;
                             return (
                                 <Col lg={3}>

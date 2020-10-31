@@ -1,0 +1,26 @@
+.feedback-textarea {
+    height: 200px !important;
+}
+
+.reply-textarea {
+    height: 100px !important;
+}
+
+/* Chat containers */
+.chat-container {
+    border: 2px solid #dedede;
+    background-color: #f1f1f1;
+    border-radius: 5px;
+    padding: 10px;
+    margin: 10px 0;
+  }
+
+  .chat-main-container{
+      height: 350px;
+      overflow: scroll;
+  }
+  .chat-main-container::-webkit-scrollbar {
+    width: 0px;
+    background: transparent; /* make scrollbar transparent */
+}
+  
