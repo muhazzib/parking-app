@@ -23,7 +23,7 @@ const Dashboard = () => {
     // }, []);
     return (
         <>
-            <Heading title='Locations' hideButton={store.user.role !== 'admin'} onClickButton={() => showLocationModal(!locationModal)} containerClass='mt-3' />
+            <Heading title='Locations' hideButton={store.user ? store.user.role !== 'admin' : true} onClickButton={() => showLocationModal(!locationModal)} containerClass='mt-3' />
             <div className='mx-3'>
                 <Table bordered hover>
                     <thead>
@@ -34,7 +34,7 @@ const Dashboard = () => {
                     </thead>
                     <tbody>
                         {
-                            Object.keys(store.locations).map((record, recordIndex) => (
+                            store.locations && Object.keys(store.locations).map((record, recordIndex) => (
                                 <tr key={record} className='clickable-item' onClick={() => history.push(`slots/${record}`)}>
                                     <td>{recordIndex + 1}</td>
                                     <td>{store.locations[record].name}</td>

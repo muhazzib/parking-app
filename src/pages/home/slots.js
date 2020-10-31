@@ -104,13 +104,7 @@ const Slots = () => {
         const matchedBooking = Object.keys(prevBookings).filter((record) => {
             const startTimeToCompare = moment.utc(prevBookings[record].startingTime).isBetween(moment.utc(bookingDate + ' ' + startingTime), moment.utc(bookingDate + ' ' + endingTime));
             const endTimeToCompare = moment.utc(prevBookings[record].endingTime).isBetween(moment.utc(bookingDate + ' ' + startingTime), moment.utc(bookingDate + ' ' + endingTime));
-            
-            // const startTimeToCompare = moment.utc(moment.utc(bookingDate + ' ' + startingTime).format()).isBetween(moment.utc(prevBookings[record].startingTime), moment.utc(prevBookings[record].endingTime));
-            // const endTimeToCompare = !startTimeToCompare && moment.utc(bookingDate + ' ' + endingTime).format() >= prevBookings[record].endingTime ? false : moment.utc(moment.utc(bookingDate + ' ' + endingTime).format()).isBetween(moment.utc(prevBookings[record].startingTime), moment.utc(prevBookings[record].endingTime));
-            if(prevBookings[record].slotId === slotToCheck) {
-                console.log(startTimeToCompare,'startTimeToComparestartTimeToCompare');
-                console.log(endTimeToCompare,'endTimeToCompare');
-            }
+           
             return prevBookings[record].slotId === slotToCheck && prevBookings[record].date === bookingDate && (startTimeToCompare || endTimeToCompare);
         }).reduce((res, key) => (res[key] = prevBookings[key], res), {});
         if (!Object.keys(matchedBooking).length) {
@@ -121,9 +115,9 @@ const Slots = () => {
 
     return (
         <>
-            <Heading title={`${location.name} Slots`} hideButton={store.user.role !== 'admin'} onClickButton={() => showSlotModal(!slotModal)} containerClass='mt-3' />
+            <Heading title={`${location.name} Slots`} hideButton={store.user ? store.user.role !== 'admin' : true} onClickButton={() => showSlotModal(!slotModal)} containerClass='mt-3' />
             {
-                store.user.role === 'user' && (
+                store.user && store.user.role === 'user' && (
                     <div className='booking-form'>
                         <Form noValidate validated={validated} onSubmit={addBooking}>
                             <DefaultFormGroup value={booking.date} onChange={getFormValues} name='date' required={true} type='date' label='Parking Date' placeholder='Select parking date' controlId='formBasicParkingDate' />
