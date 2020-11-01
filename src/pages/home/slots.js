@@ -61,7 +61,6 @@ const Slots = () => {
 
     // Get Booking Details
     const getFormValues = (ev) => {
-        console.log(ev.target.value, 'ev')
         let value = ev.target.value;
         const name = ev.target.name;
         const bookingClone = { ...booking };
