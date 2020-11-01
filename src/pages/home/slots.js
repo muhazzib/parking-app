@@ -9,7 +9,10 @@ import { useHistory, useParams } from "react-router-dom";
 import DefaultFormGroup from '../../components/form-group';
 import DefaultButton from '../../components/button';
 import { ToastContainer, toast } from 'react-toastify';
+import { emailJS } from '../../constants/constants';
+import emailjs from 'emailjs-com';
 import moment from 'moment';
+
 
 
 
@@ -59,11 +62,16 @@ const Slots = () => {
     const getFormValues = (ev) => {
         console.log(ev.target.value, 'ev')
         let value = ev.target.value;
+        const name = ev.target.name;
         const bookingClone = { ...booking };
+
+        if (name === 'date' || name === 'endingTime' || name === 'startingTime') {
+            bookingClone.slotId = '';
+        };
 
         setBooking({
             ...bookingClone,
-            [ev.target.name]: value
+            [name]: value
         });
 
     };
@@ -83,7 +91,18 @@ const Slots = () => {
             if (bookingClone.slotId) {
                 setLoading(true);
                 setValidated(true);
-                db.child('bookings/').push(bookingClone).then(() => {
+                db.child('bookings/').push(bookingClone).then(async () => {
+                    const templateParams = {
+                        user: store.user.username,
+                        message: 'Check this out!',
+                        receiverEmail: store.user.email,
+                        date: bookingClone.date,
+                        startingTime: moment.utc(bookingClone.startingTime).format('HH.mm'),
+                        endingTime: moment.utc(bookingClone.endingTime).format('HH.mm')
+                    };
+
+                    const emailResponse = await emailjs.send(emailJS.serviceId, emailJS.templateId, templateParams, emailJS.userId);
+
                     setLoading(false);
                     setBooking({
                         date: '',
@@ -93,7 +112,8 @@ const Slots = () => {
                         noOfHours: '',
                         startingTime: '',
                         endingTime: ''
-                    })
+                    });
+
                     toast.success('Booking has been done successfully');
                 });
             }
@@ -122,11 +142,11 @@ const Slots = () => {
             {
                 store.user && store.user.role === 'user' && (
                     <div className='booking-form'>
-                        <Form noValidate validated={validated} onSubmit={addBooking}>
+                        <Form validated={validated} onSubmit={addBooking}>
                             <DefaultFormGroup value={booking.date} onChange={getFormValues} name='date' required={true} type='date' label='Parking Date' placeholder='Select parking date' controlId='formBasicParkingDate' />
-                            <DefaultFormGroup value={booking.startingTime} max={booking.endingTime} required={true} disabled={!booking.date} onChange={getFormValues} name='startingTime' required={true} type='time' label='Parking Staring Time' placeholder='Select parking time' controlId='formBasicStartingParkingTime' />
+                            <DefaultFormGroup value={booking.startingTime} required={true} disabled={!booking.date} onChange={getFormValues} name='startingTime' required={true} type='time' label='Parking Staring Time' placeholder='Select parking time' controlId='formBasicStartingParkingTime' />
                             <DefaultFormGroup value={booking.endingTime} min={booking.startingTime} required={true} disabled={!booking.startingTime} onChange={getFormValues} name='endingTime' required={true} type='time' label='Parking Ending Time' placeholder='Select parking time' controlId='formBasicEndingParkingTime' />
-                            <DefaultButton disabled={!booking.date || !booking.startingTime || !booking.endingTime || !booking.slotId} loading={loading} className='float-right' type='submit' title='Book' onClick={addBooking} />
+                            <DefaultButton disabled={!booking.date || !booking.startingTime || !booking.endingTime || !booking.slotId || loading} loading={loading} className='float-right' type='submit' title='Book' />
                         </Form>
                     </div>
                 )
