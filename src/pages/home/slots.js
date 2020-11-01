@@ -160,7 +160,7 @@ const Slots = () => {
             }
 
             <div className='mx-3'>
-                {Object.keys(slots).length > 0 && (
+                {store.user && store.user.role === 'user' && Object.keys(slots).length > 0 && (
                     <h5>Select Slot</h5>
                 )}
                 <Row>

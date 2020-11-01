@@ -65,7 +65,7 @@ const Register = () => {
                 <DefaultFormGroup onChange={getFormValues} name='email' value={user.email} required={true} type='email' label='Email Address' placeholder='Enter email' controlId='formBasicEmail' />
                 <DefaultFormGroup onChange={getFormValues} name='password' value={user.password} required={true} type='password' label='Password' placeholder='Password' controlId='formBasicPassword' />
                 <Link to='login' className='d-block'>Already have an Account ?</Link>
-                <DefaultButton loading={loading} className='float-right' type='submit' title='Register'/>
+                <DefaultButton disabled={loading} loading={loading} className='float-right' type='submit' title='Register'/>
                 <ToastContainer />
             </Form>
         </div>
