@@ -57,7 +57,7 @@ const Login = () => {
                 <img src='https://images.vexels.com/media/users/3/144356/isolated/preview/52fb168f1bd3abf7e97a8e9bfdac331d-speed-car-logo-by-vexels.png' />
                 <DefaultFormGroup onChange={getFormValues} name='email' required={true} type='email' label='Email Address' placeholder='Enter email' controlId='formBasicEmail' />
                 <DefaultFormGroup onChange={getFormValues} name='password' required={true} type='password' label='Password' placeholder='Password' controlId='formBasicPassword' />
-                <Link to='register' className='d-block'>Already a registered User ?</Link>
+                <Link to='register' className='d-block'>Don't have an Account ?</Link>
                 <DefaultButton disabled={loading} loading={loading} className='float-right' type='submit' title='Login' />
                 <ToastContainer />
             </Form>

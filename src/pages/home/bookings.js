@@ -65,7 +65,7 @@ const Bookings = () => {
                                 <tr key={record}>
                                     <td>{recordIndex + 1}</td>
                                     <td>{bookings[record].date}</td>
-                                    <td>{moment.utc(bookings[record].startingTime).format('HH.mm')}</td>
+                                    <td>{moment.utc(bookings[record].startingTime).format('HH:mm')}</td>
                                     <td>{moment.utc(bookings[record].endingTime).format('HH:mm')}</td>
                                     <td>{store.locations[bookings[record].locationId].name}</td>
                                     <td>{store.slots[bookings[record].slotId].name}</td>
