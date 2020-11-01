@@ -1,10 +1,10 @@
 import { useEffect, useState, useContext } from 'react';
+import { ToastContainer } from 'react-toastify';
 import { Modal, Form } from 'react-bootstrap';
+import { db, auth } from '../firebase/firebase';
 import DefaultFormGroup from './form-group';
 import DefaultButton from './button';
-import { ToastContainer, toast } from 'react-toastify';
 import AppContext from '../contexts/app-context';
-import { db, auth } from '../firebase/firebase';
 import moment from 'moment';
 
 
@@ -16,6 +16,7 @@ const FeedBackDetails = ({ show, handleClose }) => {
     const [messages, setMessages] = useState(null);
     const store = useContext(AppContext);
 
+    // fetch admin responses of a feedback when modal is open
     useEffect(() => {
         if (show) {
             setFeedBackDetail(show);
@@ -26,8 +27,9 @@ const FeedBackDetails = ({ show, handleClose }) => {
                 }
             });
         }
-    }, [show])
+    }, [show]);
 
+    // function to get admin reply from text area
     const getFormValues = (ev) => {
         setReply({
             ...reply,
@@ -35,6 +37,7 @@ const FeedBackDetails = ({ show, handleClose }) => {
         })
     };
 
+    // function for sending reply to Feeback
     const sendMessage = (event) => {
         const form = event.currentTarget;
         event.preventDefault();
@@ -65,6 +68,8 @@ const FeedBackDetails = ({ show, handleClose }) => {
                 <Modal.Header><b>Feedback Detail</b></Modal.Header>
                 <Modal.Body>
                     <p>{feedBackDetail && feedBackDetail.feedback}</p>
+
+                    {/* Looping through all responses from Admin  */}
                     {
                         messages && Object.keys(messages).length && (
                             <div className='chat-main-container mb-1'>
@@ -81,6 +86,8 @@ const FeedBackDetails = ({ show, handleClose }) => {
                             </div>
                         )
                     }
+
+                    {/* Form for responding to Feedback */}
                     {store.user && store.user.role === 'admin' && (
                         <Form noValidate validated={validated} onSubmit={sendMessage}>
                             <DefaultFormGroup value={reply.text} className='reply-textarea' as='textarea' onChange={getFormValues} name='text' required={true} label='Reply' placeholder='Enter Your Reply' controlId='formBasicFeedback' />

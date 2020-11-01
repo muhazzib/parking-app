@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { Modal, Form } from 'react-bootstrap';
-import DefaultFormGroup from './form-group';
-import DefaultButton from './button';
 import { ToastContainer, toast } from 'react-toastify';
 import { db } from '../firebase/firebase';
+import DefaultFormGroup from './form-group';
+import DefaultButton from './button';
 
-
+// Location Modal for Adding new Locations in the system
 const LocationModal = ({ show, handleClose }) => {
     const [validated, setValidated] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -13,6 +13,7 @@ const LocationModal = ({ show, handleClose }) => {
         name: ''
     });
 
+    // function for adding new Location
     const addLocation = (event) => {
         const form = event.currentTarget;
         event.preventDefault();
@@ -29,12 +30,14 @@ const LocationModal = ({ show, handleClose }) => {
         }
     };
 
+    // function to get location details
     const getFormValues = (ev) => {
         setLocation({
             ...location,
             [ev.target.name]: ev.target.value
         })
-    }
+    };
+
     return (
         <>
             <Modal

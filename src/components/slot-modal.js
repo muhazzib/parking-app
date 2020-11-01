@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { Modal, Form } from 'react-bootstrap';
+import { db } from '../firebase/firebase';
+import { ToastContainer, toast } from 'react-toastify';
 import DefaultFormGroup from './form-group';
 import DefaultButton from './button';
-import { ToastContainer, toast } from 'react-toastify';
-import { db } from '../firebase/firebase';
 
-
+// Slot Modal for Adding new Slot of specific Location in the system
 const SlotModal = ({ show, handleClose, locationId }) => {
     const [validated, setValidated] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -13,6 +13,7 @@ const SlotModal = ({ show, handleClose, locationId }) => {
         name: ''
     });
 
+    // function for adding new Slot
     const addSlot = (event) => {
         const form = event.currentTarget;
         event.preventDefault();
@@ -31,15 +32,16 @@ const SlotModal = ({ show, handleClose, locationId }) => {
         }
     };
 
+    // function to get slot details
     const getFormValues = (ev) => {
         setSlot({
             ...slot,
             [ev.target.name]: ev.target.value
-        })
-    }
+        });
+    };
+
     return (
         <>
-            {console.log(locationId, 'locationId')}
             <Modal
                 show={show}
                 onHide={handleClose}

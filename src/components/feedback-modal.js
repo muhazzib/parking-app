@@ -5,7 +5,7 @@ import DefaultButton from './button';
 import { ToastContainer, toast } from 'react-toastify';
 import { db, auth } from '../firebase/firebase';
 
-
+// Feedback Modal Component for sending Feedback to Admin
 const FeedbackModal = ({ show, handleClose }) => {
     const [validated, setValidated] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -13,6 +13,7 @@ const FeedbackModal = ({ show, handleClose }) => {
         feedback: ''
     });
 
+    // function for sending Feeback
     const addFeedback = (event) => {
         const form = event.currentTarget;
         event.preventDefault();
@@ -31,6 +32,7 @@ const FeedbackModal = ({ show, handleClose }) => {
         }
     };
 
+    // function to get feedback text from text area
     const getFormValues = (ev) => {
         setFeedback({
             ...feedback,

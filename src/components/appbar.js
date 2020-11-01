@@ -1,10 +1,12 @@
 import { useContext } from 'react';
 import { Navbar, Nav } from 'react-bootstrap';
-import AppContext from '../contexts/app-context';
-import DefaultButton from './button';
 import { auth } from '../firebase/firebase';
 import { useHistory } from "react-router-dom";
+import AppContext from '../contexts/app-context';
+import DefaultButton from './button';
 
+
+// Global AppBar which is used throughout the app based on role
 const AppBar = () => {
     const store = useContext(AppContext);
     const history = useHistory();

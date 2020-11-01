@@ -1,6 +1,7 @@
 import { Modal } from 'react-bootstrap';
 import DefaultButton from './button';
 
+// Confirmation Modal Component for confirming any important actions
 const ConfirmationModal = ({ title, onSubmit, onCancel, show }) => {
 
     return (
