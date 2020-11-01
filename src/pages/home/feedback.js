@@ -1,12 +1,11 @@
 
 import { useContext, useEffect, useState } from 'react';
-import AppContext from '../../contexts/app-context';
+import { Table } from 'react-bootstrap';
 import { db } from '../../firebase/firebase';
+import AppContext from '../../contexts/app-context';
 import Heading from '../../components/heading';
 import FeedbackModal from '../../components/feedback-modal';
 import FeedBackDetails from '../../components/feedback-details';
-import { Table } from 'react-bootstrap';
-import { useHistory } from "react-router-dom";
 
 const Feedbacks = () => {
     const [feedbackModal, showFeedbackModal] = useState(false);
@@ -14,8 +13,9 @@ const Feedbacks = () => {
     const [users, setUsers] = useState({});
     const [feedBackDetail, showFeedBackDetail] = useState(null);
     const store = useContext(AppContext);
-    const history = useHistory();
 
+
+    // Retrieve All Feedbacks if logged in user is Admin. Otherwise retrieve only Logged in user Feebacks
     useEffect(() => {
         if (store.user) {
             if (store.user.role === 'user') {
@@ -43,6 +43,8 @@ const Feedbacks = () => {
         }
     }, [store.user]);
 
+
+    // Show Feedback Detail Modal
     const showFeedBackDetails = (feeback, feedBackID) => {
         db.child('users/' + feeback.userId).once("value", (snapshot) => {
             let obj = snapshot.val();
@@ -67,6 +69,7 @@ const Feedbacks = () => {
                         </tr>
                     </thead>
                     <tbody>
+                        {/* Looping through Feedback records */}
                         {
                             Object.keys(feedbacks).map((record, recordIndex) => (
                                 <tr key={record} className='clickable-item' onClick={() => showFeedBackDetails(feedbacks[record], record)}>
@@ -81,7 +84,10 @@ const Feedbacks = () => {
                     </tbody>
                 </Table>
             </div>
+            {/* Modal for Adding new Feedback */}
             <FeedbackModal show={feedbackModal} handleClose={() => showFeedbackModal(!feedbackModal)} />
+
+            {/* Modal for showing specific Feedback details and its responses from Admin */}
             {
                 feedBackDetail && (
                     <FeedBackDetails show={feedBackDetail} handleClose={() => showFeedBackDetail(null)} />

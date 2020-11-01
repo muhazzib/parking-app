@@ -1,3 +1,4 @@
+// email JS keys for sending emails
 export const emailJS = {
     serviceId: '12345678',
     templateId: 'template_emelh0v',

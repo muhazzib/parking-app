@@ -1,10 +1,9 @@
 
 import { useContext, useEffect, useState } from 'react';
-import AppContext from '../../contexts/app-context';
 import { db } from '../../firebase/firebase';
-import Heading from '../../components/heading';
 import { Table } from 'react-bootstrap';
-import { useHistory } from "react-router-dom";
+import AppContext from '../../contexts/app-context';
+import Heading from '../../components/heading';
 import moment from 'moment';
 import DefaultButton from '../../components/button';
 import ConfirmationModal from '../../components/confirmation-modal';
@@ -14,8 +13,8 @@ const Bookings = () => {
     const [bookings, setBookings] = useState({});
     const [confirmationModal, setConfirmationModal] = useState('');
     const store = useContext(AppContext);
-    const history = useHistory();
 
+    // Retrieve All Bookings if logged in user is Admin. Otherwise retrieve only Logged in user Bookings
     useEffect(() => {
         if (store.user) {
             if (store.user.role === 'user') {
@@ -36,11 +35,13 @@ const Bookings = () => {
         }
     }, [store.user]);
 
+    // Function to delete/cancel booking
     const cancelBooking = () => {
         db.child('bookings/' + confirmationModal).remove().then(() => {
             setConfirmationModal('');
         });
-    }
+    };
+
     return (
         <>
             <Heading title='Bookings' hideButton={true} containerClass='mt-3' />
@@ -58,6 +59,7 @@ const Bookings = () => {
                         </tr>
                     </thead>
                     <tbody>
+                        {/* Looping through Booking Records */}
                         {
                             store.locations && store.slots && Object.keys(bookings).map((record, recordIndex) => (
                                 <tr key={record}>
@@ -75,6 +77,8 @@ const Bookings = () => {
                         }
                     </tbody>
                 </Table>
+
+                 {/* Confirmation Message for Deleting/Cancelling Booking */}
                 <ConfirmationModal show={confirmationModal !== ''} title='Do you want to cancel the Booking ?' onSubmit={() => cancelBooking()} onCancel={() => setConfirmationModal('')} />
             </div>
         </>

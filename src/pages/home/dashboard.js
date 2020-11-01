@@ -1,15 +1,13 @@
 
-import { useContext, useEffect, useState } from 'react';
-import AppContext from '../../contexts/app-context';
-import { db } from '../../firebase/firebase';
-import Heading from '../../components/heading';
-import LocationModal from '../../components/location-modal';
+import { useContext, useState } from 'react';
 import { Table } from 'react-bootstrap';
 import { useHistory } from "react-router-dom";
+import AppContext from '../../contexts/app-context';
+import Heading from '../../components/heading';
+import LocationModal from '../../components/location-modal';
 
 const Dashboard = () => {
     const [locationModal, showLocationModal] = useState(false);
-    const [locations, setLocations] = useState({});
     const store = useContext(AppContext);
     const history = useHistory();
     return (
@@ -24,6 +22,7 @@ const Dashboard = () => {
                         </tr>
                     </thead>
                     <tbody>
+                        {/* Looping through all Locations Record */}
                         {
                             store.locations && Object.keys(store.locations).map((record, recordIndex) => (
                                 <tr key={record} className='clickable-item' onClick={() => history.push(`slots/${record}`)}>

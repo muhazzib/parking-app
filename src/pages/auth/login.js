@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { Form } from 'react-bootstrap';
-import DefaultButton from '../../components/button';
-import DefaultFormGroup from '../../components/form-group';
 import { Link, useHistory } from "react-router-dom";
 import { auth, db } from '../../firebase/firebase';
 import { ToastContainer, toast } from 'react-toastify';
+import DefaultButton from '../../components/button';
+import DefaultFormGroup from '../../components/form-group';
 
 const Login = () => {
     const [validated, setValidated] = useState(false);
@@ -15,15 +15,21 @@ const Login = () => {
     });
     const history = useHistory();
 
+    // function for logging in the user in the app
     const login = (event) => {
         const form = event.currentTarget;
         event.preventDefault();
+
+        // check if all form fields are validated
         if (form.checkValidity() === false) {
             event.stopPropagation();
         } else {
             setLoading(true);
             setValidated(true);
+
+            // Call Firebase method of Logging In the User
             auth().signInWithEmailAndPassword(user.email, user.password).then((res) => {
+                // Retrieve newly login user in firebase database
                 db.child('users/' + auth().currentUser.uid).once("value", (snapshot) => {
                     let obj = snapshot.val();
                     localStorage.setItem('user', JSON.stringify(obj));
@@ -37,6 +43,7 @@ const Login = () => {
         }
     };
 
+    // Get Email and Password of the User
     const getFormValues = (ev) => {
         setUser({
             ...user,
