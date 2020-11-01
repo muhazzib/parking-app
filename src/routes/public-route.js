@@ -5,6 +5,8 @@ import {
     Route
 } from "react-router-dom";
 
+
+// Higher Order Component For Public Routes
 const PublicRoute = ({ component: Component, authenticated, ...rest }) => {
     return (
         <Route {...rest} render={(props) => (

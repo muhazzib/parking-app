@@ -3,6 +3,8 @@ import {
   BrowserRouter as Router,
   Switch
 } from "react-router-dom";
+import { auth, db } from './firebase/firebase';
+import { Spinner } from 'react-bootstrap';
 import Login from './pages/auth/login';
 import Register from './pages/auth/register';
 import Dashboard from './pages/home/dashboard';
@@ -10,19 +12,17 @@ import Bookings from './pages/home/bookings';
 import Slots from './pages/home/slots';
 import Feedbacks from './pages/home/feedback';
 import AppBar from './components/appbar';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import PrivateRoute from './routes/protected-route';
+import PublicRoute from './routes/public-route';
+import AppContext from './contexts/app-context';
 import './styles/auth.css';
 import './styles/appbar.css';
 import './styles/general.css';
 import './styles/booking-form.css';
 import './styles/slot.css';
 import './styles/feedback.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-toastify/dist/ReactToastify.css';
-import { auth, db } from './firebase/firebase';
-import PrivateRoute from './routes/protected-route';
-import PublicRoute from './routes/public-route';
-import AppContext from './contexts/app-context';
-import { Spinner } from 'react-bootstrap';
 
 
 function App() {
@@ -35,6 +35,8 @@ function App() {
   const [slots, setSlots] = useState(null);
 
   useEffect(() => auth().onAuthStateChanged(user => {
+
+    // Check if the user is authenticated or not
     if (user) {
       setAuthState({
         authenticated: true,
@@ -64,6 +66,7 @@ function App() {
     }
   }), [setAuthState]);
 
+  // Show loading while checking authorization of User
   if (authentication.initializing) {
     return <Spinner animation="grow" className='splashLoader' />;
   }
@@ -91,7 +94,6 @@ function App() {
             <PrivateRoute path="/feedbacks" authenticated={authentication.authenticated} exact={true} component={Feedbacks} />
             <PublicRoute path="/login" authenticated={authentication.authenticated} exact={true} component={Login} />
             <PublicRoute path="/register" authenticated={authentication.authenticated} exact={true} component={Register} />
-
           </Switch>
         </div>
       </Router>

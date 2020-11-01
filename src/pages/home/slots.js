@@ -13,9 +13,6 @@ import { emailJS } from '../../constants/constants';
 import emailjs from 'emailjs-com';
 import moment from 'moment';
 
-
-
-
 const Slots = () => {
     const [slotModal, showSlotModal] = useState(false);
     const [slots, setSlots] = useState({});
@@ -37,6 +34,7 @@ const Slots = () => {
     const params = useParams();
 
     useEffect(() => {
+        // Retrieve all the slots of Specific Location
         db.child('slots').orderByChild('locationId').equalTo(params.locationId).on("value", (snapshot) => {
             let obj = snapshot.val();
             if (obj) {
@@ -44,6 +42,7 @@ const Slots = () => {
             }
         });
 
+        // Retrieve All the bookings of Sepecific Location
         db.child('bookings').orderByChild('locationId').equalTo(params.locationId).on("value", (snapshot) => {
             let obj = snapshot.val();
             if (obj) {
@@ -51,6 +50,7 @@ const Slots = () => {
             }
         });
 
+        // Retrieve Sepecific Location Details
         db.child('locations/' + params.locationId).once("value", (snapshot) => {
             let obj = snapshot.val();
             if (obj) {
@@ -59,6 +59,7 @@ const Slots = () => {
         });
     }, []);
 
+    // Get Booking Details
     const getFormValues = (ev) => {
         console.log(ev.target.value, 'ev')
         let value = ev.target.value;
@@ -76,6 +77,7 @@ const Slots = () => {
 
     };
 
+    // Function for Adding new Booking and Sending Email Confirmation
     const addBooking = (event) => {
         const form = event.currentTarget;
         event.preventDefault();
@@ -91,6 +93,8 @@ const Slots = () => {
             if (bookingClone.slotId) {
                 setLoading(true);
                 setValidated(true);
+
+                // Add new Booking to Firebase data base
                 db.child('bookings/').push(bookingClone).then(async () => {
                     const templateParams = {
                         user: store.user.username,
@@ -101,6 +105,7 @@ const Slots = () => {
                         endingTime: moment.utc(bookingClone.endingTime).format('HH.mm')
                     };
 
+                    // Send Email Confirmation to User (Includes Booking Details)
                     const emailResponse = await emailjs.send(emailJS.serviceId, emailJS.templateId, templateParams, emailJS.userId);
 
                     setLoading(false);
@@ -120,6 +125,7 @@ const Slots = () => {
         }
     };
 
+    // Function to fetch Availability of Each Slots (it depends on starting time, ending time and date)
     const checkAvailability = (slotToCheck, bookingDate, startingTime, endingTime, prevBookings = {}) => {
         const matchedBooking = Object.keys(prevBookings).filter((record) => {
             const startTimeToCompare = moment.utc(prevBookings[record].startingTime).isBetween(moment.utc(bookingDate + ' ' + startingTime), moment.utc(bookingDate + ' ' + endingTime));
@@ -133,6 +139,7 @@ const Slots = () => {
         return false;
     };
 
+    // Function to validate Booking Form
     const validateForm = () => {
         return booking.date && booking.startingTime && booking.endingTime;
     }
@@ -157,6 +164,7 @@ const Slots = () => {
                     <h5>Select Slot</h5>
                 )}
                 <Row>
+                    {/* Looping through all Slots of Selected Location */}
                     {
                         Object.keys(slots).map((record, recordIndex) => {
                             const isFormFilled = validateForm();
@@ -174,6 +182,8 @@ const Slots = () => {
                     }
                 </Row>
             </div>
+
+            {/* Modal For Adding new Slot */}
             <SlotModal show={slotModal} handleClose={() => showSlotModal(!slotModal)} locationId={params.locationId} />
             <ToastContainer />
         </>
