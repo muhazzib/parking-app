@@ -84,7 +84,7 @@ const Bookings = () => {
                                     <td>{store.slots[bookings[record].slotId].name}</td>
                                     {
                                         store.user && store.user.role === 'admin' && (
-                                            <td>{users[bookings[record].userId].username}</td>
+                                            <td>{users[bookings[record].userId] && users[bookings[record].userId].username}</td>
                                         )
                                     }
                                     <td className='text-center'>
