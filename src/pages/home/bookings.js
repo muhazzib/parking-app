@@ -11,6 +11,7 @@ import ConfirmationModal from '../../components/confirmation-modal';
 
 const Bookings = () => {
     const [bookings, setBookings] = useState({});
+    const [users, setUsers] = useState({});
     const [confirmationModal, setConfirmationModal] = useState('');
     const store = useContext(AppContext);
 
@@ -29,6 +30,13 @@ const Bookings = () => {
                     let obj = snapshot.val();
                     if (obj) {
                         setBookings(obj);
+                    }
+                });
+
+                db.child('users').on("value", (snapshot) => {
+                    let obj = snapshot.val();
+                    if (obj) {
+                        setUsers(obj);
                     }
                 });
             }
@@ -55,6 +63,11 @@ const Bookings = () => {
                             <th>Ending Time</th>
                             <th>Location</th>
                             <th>Slot</th>
+                            {
+                                store.user && store.user.role === 'admin' && (
+                                    <th>User</th>
+                                )
+                            }
                             <th />
                         </tr>
                     </thead>
@@ -69,6 +82,11 @@ const Bookings = () => {
                                     <td>{moment.utc(bookings[record].endingTime).format('HH:mm')}</td>
                                     <td>{store.locations[bookings[record].locationId].name}</td>
                                     <td>{store.slots[bookings[record].slotId].name}</td>
+                                    {
+                                        store.user && store.user.role === 'admin' && (
+                                            <td>{users[bookings[record].userId].username}</td>
+                                        )
+                                    }
                                     <td className='text-center'>
                                         <DefaultButton title='Cancel Booking' variant='danger' onClick={() => setConfirmationModal(record)} />
                                     </td>
@@ -78,7 +96,7 @@ const Bookings = () => {
                     </tbody>
                 </Table>
 
-                 {/* Confirmation Message for Deleting/Cancelling Booking */}
+                {/* Confirmation Message for Deleting/Cancelling Booking */}
                 <ConfirmationModal show={confirmationModal !== ''} title='Do you want to cancel the Booking ?' onSubmit={() => cancelBooking()} onCancel={() => setConfirmationModal('')} />
             </div>
         </>
